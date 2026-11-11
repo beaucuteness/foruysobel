@@ -1,0 +1,1043 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>beu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "DM Sans", sans-serif;
+    color: #684653;
+    overflow: hidden;
+
+    background:
+        linear-gradient(rgba(255,235,242,.76), rgba(255,235,242,.82)),
+        url("https://archive.org/download/mbid-6b1d5b1a-e915-4451-9b4e-5229d8a7b418/mbid-6b1d5b1a-e915-4451-9b4e-5229d8a7b418-35753591412_thumb1200.jpg")
+        center center / cover fixed no-repeat;
+}
+
+body.started {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ENVELOPE INTRO */
+
+.envelope-page {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(circle at center, #fff8fa, #f8dce5 50%, #eab6c8);
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+}
+
+.envelope-page.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.envelope-wrapper {
+    width: 330px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    z-index: 20;
+}
+
+/* ENVELOPE */
+
+.envelope {
+    width: 280px;
+    height: 190px;
+    margin: auto;
+    position: relative;
+    background: #d99aad;
+    border-radius: 7px;
+    perspective: 1000px;
+    box-shadow: 0 25px 60px rgba(120,55,80,.3);
+    transition: transform .8s ease;
+}
+
+.envelope-front {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #f3c5d3, #d58ba5);
+    clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+    z-index: 5;
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110px;
+    background: linear-gradient(145deg, #fce0e8, #e8b1c2);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transition: transform 1s cubic-bezier(.4,0,.2,1);
+    z-index: 8;
+}
+
+.letter-inside {
+    position: absolute;
+    left: 25px;
+    bottom: 10px;
+    width: 230px;
+    height: 145px;
+    background: #fffaf0;
+    z-index: 3;
+    box-shadow: 0 5px 15px rgba(120,50,75,.15);
+    transition: transform 1s ease, bottom 1s ease;
+}
+
+.mini-letter {
+    padding-top: 30px;
+    font-family: "Cormorant Garamond", serif;
+    color: #986174;
+    font-size: 25px;
+}
+
+.mini-letter span {
+    display: block;
+    color: #c77e9c;
+    font-size: 30px;
+}
+
+.mini-letter p {
+    font-size: 20px;
+}
+
+.envelope-wrapper.open .envelope {
+    transform: translateY(20px);
+}
+
+.envelope-wrapper.open .envelope-flap {
+    transform: rotateX(180deg);
+    z-index: 2;
+}
+
+.envelope-wrapper.open .letter-inside {
+    bottom: 105px;
+    transform: translateY(-25px);
+    z-index: 6;
+}
+
+.envelope-text {
+    margin-top: 30px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 25px;
+    color: #805263;
+}
+
+.click-text {
+    margin-top: 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b77b91;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%,100% { opacity: .4; }
+    50% { opacity: 1; }
+}
+
+/* FLOATING FLOWERS */
+
+.flower-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.flower {
+    position: absolute;
+    bottom: -80px;
+    color: #d8799a;
+    opacity: 0;
+    animation: flowerFloat 4s ease-out forwards;
+}
+
+@keyframes flowerFloat {
+    0% {
+        transform: translateY(0) scale(.2) rotate(0);
+        opacity: 0;
+    }
+    20% { opacity: 1; }
+    70% { opacity: .9; }
+    100% {
+        transform: translateY(-90vh) scale(1) rotate(30deg);
+        opacity: 0;
+    }
+}
+
+/* MAIN PAGE */
+
+.page {
+    width: 100%;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 280px minmax(400px,650px) 280px;
+    justify-content: center;
+    gap: 25px;
+    padding: 60px 30px;
+}
+
+.left-side {
+    display: flex;
+    flex-direction: column;
+}
+
+/* CONTENT */
+
+.content {
+    background: rgba(255,251,252,.94);
+    min-height: 1100px;
+    padding: 55px;
+    box-shadow: 0 20px 50px rgba(120,60,85,.12);
+    border-radius: 5px;
+}
+
+.small-title {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: #b77b91;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 58px;
+    font-weight: 500;
+    color: #75495b;
+    margin-top: 5px;
+}
+
+.subtitle {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 17px;
+    color: #997181;
+    line-height: 1.5;
+}
+
+/* SOS PHOTO */
+
+.sos-photo {
+    width: 100%;
+    height: 250px;
+    margin: 30px auto 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background:
+        linear-gradient(rgba(30,20,30,.08), rgba(30,20,30,.25)),
+        url("https://archive.org/download/mbid-6b1d5b1a-e915-4451-9b4e-5229d8a7b418/mbid-6b1d5b1a-e915-4451-9b4e-5229d8a7b418-35753591412_thumb1200.jpg")
+        center 48% / cover no-repeat;
+    box-shadow: 0 12px 30px rgba(100,50,70,.18);
+}
+
+.sos-photo-text {
+    position: absolute;
+    bottom: 15px;
+    left: 18px;
+    color: white;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 23px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+
+/* CASSETTE */
+
+.cassette-area {
+    display: flex;
+    justify-content: center;
+    margin: 35px 0 25px;
+}
+
+.cassette {
+    width: 390px;
+    height: 245px;
+    border-radius: 15px;
+    padding: 22px;
+    background: linear-gradient(145deg, #f0d5df, #c99eae);
+    box-shadow:
+        inset 0 0 0 2px #ad7e90,
+        0 15px 30px rgba(100,45,65,.2);
+    transform: rotate(-1deg);
+}
+
+.cassette-label {
+    display: flex;
+    justify-content: space-between;
+    background: #fff0f4;
+    padding: 7px 20px;
+    border-radius: 4px;
+    color: #86586b;
+    font-family: "Cormorant Garamond", serif;
+}
+
+.cassette-decoration {
+    text-align: center;
+    font-size: 13px;
+    color: #d18aa3;
+    margin: 5px;
+}
+
+.cassette-window {
+    height: 70px;
+    width: 230px;
+    background: #d8c5cc;
+    border-radius: 8px;
+    margin: 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    box-shadow: inset 0 0 8px rgba(0,0,0,.15);
+}
+
+.reel {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: #f7e9ed;
+    border: 5px solid #b99ca7;
+    position: relative;
+}
+
+.reel::before,
+.reel::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 22px;
+    background: #8f727d;
+    left: 20px;
+    top: 12px;
+    transform: rotate(45deg);
+}
+
+.reel::after {
+    transform: rotate(-45deg);
+}
+
+.reel-center {
+    width: 12px;
+    height: 12px;
+    background: #92717e;
+    border-radius: 50%;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+}
+
+.tape {
+    height: 15px;
+    width: 100px;
+    background: #634652;
+}
+
+.cassette-bottom {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    font-size: 17px;
+    color: #d8799a;
+}
+
+/* SPOTIFY */
+
+.spotify-section {
+    margin: 20px auto 35px;
+    width: 100%;
+    max-width: 390px;
+}
+
+.spotify-title {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ad7189;
+    margin-bottom: 10px;
+}
+
+.spotify-box {
+    overflow: hidden;
+    border-radius: 14px;
+    background: #1d1024;
+    box-shadow: 0 15px 30px rgba(100,50,70,.20);
+}
+
+.spotify-box iframe {
+    display: block;
+    width: 100%;
+    height: 152px;
+    border: none;
+}
+
+.spotify-open {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    background: #d985a6;
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    transition: .2s;
+}
+
+.spotify-open:hover {
+    background: #c96e94;
+    transform: scale(1.02);
+}
+
+/* PINK BOUQUET */
+
+.bouquet-section {
+    width: 100%;
+    max-width: 390px;
+    margin: 10px auto 45px;
+    text-align: center;
+}
+
+.bouquet-title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 17px;
+    color: #997181;
+    margin-bottom: 8px;
+    letter-spacing: .5px;
+}
+
+.bouquet-frame {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    padding: 15px;
+    border-radius: 20px;
+    background: radial-gradient(circle at center, #fff, #ffe7ef);
+    box-shadow: 0 12px 30px rgba(120,60,85,.10);
+    overflow: hidden;
+}
+
+.bouquet-frame::before {
+    content: "♡  ✿  ♡";
+    position: absolute;
+    top: 12px;
+    left: 0;
+    right: 0;
+    color: #d49aaf;
+    font-size: 13px;
+    letter-spacing: 8px;
+    opacity: .7;
+}
+
+.bouquet-frame img {
+    width: 100%;
+    max-width: 330px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: hue-rotate(65deg) saturate(1.2)
+            drop-shadow(0 10px 12px rgba(120,65,85,.15));
+    transition: transform .4s ease;
+}
+
+.bouquet-frame img:hover {
+    transform: scale(1.03) rotate(-1deg);
+}
+
+.bouquet-placeholder {
+    font-family: "Cormorant Garamond", serif;
+    color: #bd718e;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+/* LETTERS */
+
+.letter {
+    margin-top: 50px;
+    background: #f6e9c7;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(80,50,40,.08);
+}
+
+.letter::before {
+    content: "♡";
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #c77e9c;
+}
+
+.letter-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: #88705d;
+    margin-bottom: 20px;
+}
+
+.letter h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.letter p {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: #625346;
+    margin-bottom: 15px;
+}
+
+.signature {
+    text-align: right;
+    font-style: italic;
+}
+
+.second-letter {
+    background: #f8e1e9;
+}
+
+/* LETTER BUTTON */
+
+.letter-button {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: none;
+    background: #bd718e;
+    color: white;
+    font-size: 23px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(100,40,65,.25);
+    z-index: 20;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(65,30,45,.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10000;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    max-width: 500px;
+    background: #fff8e7;
+    padding: 45px;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0,0,0,.3);
+}
+
+.modal-content h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 32px;
+    margin: 20px 0;
+}
+
+.modal-content p {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #5d504b;
+    margin-bottom: 15px;
+}
+
+.close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    border: none;
+    background: none;
+    font-size: 27px;
+    cursor: pointer;
+    color: #a66c83;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px) {
+    .page {
+        grid-template-columns: 1fr;
+        max-width: 700px;
+        margin: auto;
+    }
+
+    .left-side,
+    .right-space {
+        display: none;
+    }
+}
+
+@media(max-width:600px) {
+    .page {
+        padding: 20px 12px;
+    }
+
+    .content {
+        padding: 35px 22px;
+    }
+
+    h1 {
+        font-size: 43px;
+    }
+
+    .sos-photo {
+        height: 210px;
+    }
+
+    .cassette {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .cassette-window {
+        width: 210px;
+    }
+
+    .spotify-section {
+        max-width: 100%;
+    }
+
+    .bouquet-frame {
+        min-height: 260px;
+        border-radius: 16px;
+    }
+
+    .bouquet-frame img {
+        max-width: 300px;
+    }
+
+    .letter {
+        padding: 23px;
+    }
+
+    .envelope {
+        width: 250px;
+        height: 170px;
+    }
+
+    .letter-inside {
+        width: 205px;
+        height: 130px;
+        left: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ENVELOPE INTRO -->
+
+<section class="envelope-page" id="envelopePage">
+    <div class="flower-container" id="flowerContainer"></div>
+
+    <div class="envelope-wrapper" id="envelope">
+        <div class="envelope">
+            <div class="envelope-flap"></div>
+
+            <div class="letter-inside">
+                <div class="mini-letter">
+                    <span>♡</span>
+                    <p>for you</p>
+                </div>
+            </div>
+
+            <div class="envelope-front"></div>
+        </div>
+
+        <p class="envelope-text"> little something just for you ♡</p>
+        <p class="click-text">doublr click the envelope</p>
+    </div>
+</section>
+
+<!-- MAIN PAGE -->
+
+<div class="page">
+    <aside class="left-side"></aside>
+
+    <main class="content">
+
+        <p class="small-title">TO YSOBEL</p>
+
+        <h1>HEY BUD</h1>
+
+        <p class="subtitle">
+            eto na ang promise ko
+            <br>
+            fav song mo♡
+        </p>
+
+        <!-- SZA SOS PHOTO -->
+
+        <section class="sos-photo">
+            <p class="sos-photo-text">cute ni beau^^</p>
+        </section>
+
+        <!-- CASSETTE -->
+
+        <section class="cassette-area">
+            <div class="cassette">
+
+                <div class="cassette-label">
+                    <span>♡</span>
+                    <strong>Notice Me</strong>
+                    <span>♡</span>
+                </div>
+
+                <div class="cassette-decoration">
+                    ❀　✿　❀　✿　❀
+                </div>
+
+                <div class="cassette-window">
+                    <div class="reel">
+                        <div class="reel-center"></div>
+                    </div>
+
+                    <div class="tape"></div>
+
+                    <div class="reel">
+                        <div class="reel-center"></div>
+                    </div>
+                </div>
+
+                <div class="cassette-bottom">
+                    <span>✿</span>
+                    <span>♡</span>
+                    <span>✿</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SPOTIFY NOTICE ME -->
+
+        <section class="spotify-section">
+
+            <div class="spotify-title">
+                ♫ now playing — notice me by sza
+            </div>
+
+            <div class="spotify-box">
+                <iframe
+                    src="https://open.spotify.com/embed/track/1gawvjMapArpeEUZqGkd5v?utm_source=generator"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <a
+                class="spotify-open"
+                href="https://open.spotify.com/track/1gawvjMapArpeEUZqGkd5v"
+                target="_blank"
+                rel="noopener noreferrer">
+                ♫ Play Notice Me on Spotify
+            </a>
+
+        </section>
+
+        <!-- BOUQUET -->
+
+        <section class="bouquet-section">
+
+            <p class="bouquet-title">
+                flowers for you, ysobel ♡
+            </p>
+
+            <div class="bouquet-frame">
+
+                <img
+                    src="https://cdn.imgbin.com/24/15/14/lavender-bouquet-lavender-blossom-bouquet-illustration-3M5LgA14.jpg"
+                    alt="Pink-tinted lavender bouquet"
+                    onerror="
+                        this.style.display='none';
+                        document.getElementById('bouquetFallback').style.display='block';
+                    "
+                >
+
+                <div
+                    id="bouquetFallback"
+                    class="bouquet-placeholder"
+                    style="display:none;">
+                    💗💐<br>
+                    idk your fav flowers but here pink flowers<br>
+                    just for you ♡
+                </div>
+
+            </div>
+        </section>
+
+        <!-- LETTER -->
+
+        <section class="letter">
+
+            <div class="letter-top">
+                <span>JUST A RANDOM LETTER</span>
+                <span>♡</span>
+            </div>
+
+            <h2>how glad i am to have you,</h2>
+
+            <p>
+                it's funny how we met through hog. you were just looking for someone to talk to, then i happened to leave a comment and decided to make the first move. i honestly didn't expect that a simple interaction would turn into a friendship that i would eventually be thankful for.
+            </p>
+
+            <p>
+                as time went by, our conversations continued, and i'm glad that we reached a point where we could talk comfortably with each other. i'm thankful that i got to know you, even if it hasn't been that long. sometimes, the people we meet unexpectedly turn out to be people we're genuinely happy to have in our lives.
+            </p>
+
+            <p>
+                i hope you know that i appreciate your presence and the little conversations we share. i'm glad that i took the chance to approach you because otherwise, we might have never gotten to know each other.
+            </p>
+
+            <p>
+                thank you for being a friend i can feel comfortable talking to. i may not have known you for a long time, but i'm genuinely happy that our paths crossed. i hope this friendship continues to grow, and i'm looking forward to knowing more about you.
+            </p>
+
+            <p class="signature">to ysobel♡</p>
+
+        </section>
+
+        <!-- SECOND LETTER -->
+
+        <section class="letter second-letter">
+
+            <div class="letter-top">
+                <span>dear future nurse,</span>
+                <span>✿</span>
+            </div>
+
+            <p>
+                i just want to remind you how proud i am of you. i know nursing isn't an easy prog, and being in your fourth year means you've already gone through so many challenges, sleepless nights, stressful days, and moments when things probably felt overwhelming.
+            </p>
+
+            <p>
+                i may not fully understand everything you experience in your acads, but i know enough to understand that it takes a lot of patience, dedication, and strength to get where you are now. and look at you, you're still there, continuing to work hard despite everything.
+            </p>
+
+            <p>
+                i hope you never forget how far you've come. don't be too hard on yourself whenever things don't go as planned. you don't have to be perfect all the time, and you don't have to figure everything out in one day. every little progress counts, even the ones that you think are not enough.
+            </p>
+            
+            <p>
+                i'll always be here to cheer for you, celebrate your achievements, and remind you how capable you are whenever you start doubting yourself. whether it's a small academic achievement or a big milestone, i'll be happy for you.
+            </p>
+            
+            <p>
+                i'm looking forward to the day you'll finally wear that title you've been working so hard for. future registered nurse! i hope you get to experience all the good things you've been working towards.
+            </p>
+            
+            <p>
+                always remember that someone is genuinely proud of you, and that someone is meh beu.
+            </p>
+
+            <p class="signature">from beau♡</p>
+
+        </section>
+
+    </main>
+
+    <aside class="right-space"></aside>
+</div>
+
+<!-- LETTER POPUP -->
+
+<div class="modal" id="letterModal">
+    <div class="modal-content">
+
+        <button class="close" id="closeModal">×</button>
+
+        <p class="small-title">JUST A LITTLE REMINDER</p>
+
+        <h2>for you, ysobel</h2>
+
+        <p>
+            i know life can be overwhelming sometimes, but please don't be too hard on yourself and remember that it's okay to rest and take things one step at a time. always believe in yourself and never forget how capable you are, even on days when you doubt yourself. and whenever things get difficult, i'm always here if you need someone to listen or remind you that you can get through it.
+        </p>
+
+        <p class="signature">
+            beu♡
+        </p>
+
+    </div>
+</div>
+
+<button class="letter-button" id="openLetter">💌</button>
+
+<script>
+
+/* ENVELOPE OPENING */
+
+const envelope = document.getElementById("envelope");
+const envelopePage = document.getElementById("envelopePage");
+const flowerContainer = document.getElementById("flowerContainer");
+
+let envelopeOpened = false;
+
+function openEnvelope() {
+    if (envelopeOpened) return;
+
+    envelopeOpened = true;
+    envelope.classList.add("open");
+
+    createFlowers();
+
+    setTimeout(function() {
+        envelopePage.classList.add("hide");
+        document.body.classList.add("started");
+    }, 2800);
+}
+
+envelope.addEventListener("click", openEnvelope);
+
+envelope.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openEnvelope();
+    }
+});
+
+/* PINK FLOWERS */
+
+function createFlowers() {
+    const flowers = ["✿", "❀", "✾", "✽", "❁", "✿", "❀"];
+
+    for (let i = 0; i < 45; i++) {
+        const flower = document.createElement("div");
+
+        flower.className = "flower";
+        flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+
+        flower.style.left = Math.random() * 100 + "%";
+        flower.style.fontSize = Math.random() * 25 + 18 + "px";
+        flower.style.animationDelay = Math.random() * 1.5 + "s";
+        flower.style.animationDuration = Math.random() * 2 + 3 + "s";
+
+        flowerContainer.appendChild(flower);
+
+        setTimeout(() => flower.remove(), 6500);
+    }
+}
+
+/* LOVE LETTER MODAL */
+
+const modal = document.getElementById("letterModal");
+const openLetter = document.getElementById("openLetter");
+const closeModal = document.getElementById("closeModal");
+
+openLetter.addEventListener("click", () => {
+    modal.classList.add("show");
+});
+
+closeModal.addEventListener("click", () => {
+    modal.classList.remove("show");
+});
+
+modal.addEventListener("click", event => {
+    if (event.target === modal) {
+        modal.classList.remove("show");
+    }
+});
+
+/* FLOATING HEARTS AND FLOWERS */
+
+function createHeart() {
+    const heart = document.createElement("div");
+
+    heart.textContent = Math.random() > .5 ? "♡" : "✿";
+
+    heart.style.position = "fixed";
+    heart.style.bottom = "-20px";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.color = "#d8799a";
+    heart.style.fontSize = Math.random() * 15 + 10 + "px";
+    heart.style.zIndex = "5";
+    heart.style.pointerEvents = "none";
+
+    const duration = Math.random() * 3 + 4;
+
+    heart.style.animation = `floatHeart ${duration}s linear forwards`;
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), duration * 1000);
+}
+
+const heartStyle = document.createElement("style");
+
+heartStyle.innerHTML = `
+@keyframes floatHeart {
+    from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: .8;
+    }
+
+    to {
+        transform: translateY(-100vh) rotate(30deg);
+        opacity: 0;
+    }
+}
+`;
+
+document.head.appendChild(heartStyle);
+
+setInterval(createHeart, 1800);
+
+</script>
+
+</body>
+</html>
